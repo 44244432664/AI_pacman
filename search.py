@@ -150,6 +150,7 @@ def breadthFirstSearch(problem):
             expl.append(state)
 
             if problem.isGoalState(state):
+                print(act)
                 return act
             else:
                 for s, a, c in problem.getSuccessors(state):
@@ -203,7 +204,44 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    front = util.PriorityQueue()
+    expl = {}
+
+    strt_state = problem.getStartState()
+    strt_node = (strt_state, None, None, 0) # state, parent, action, cost
+
+    front.push(strt_node, 0)
+
+    while front:
+        state, p, act, cost = front.pop()
+
+        expl[state] = [p, act, cost]
+
+        if problem.isGoalState(state):
+            path = []
+            while expl[state][0] != None:
+                path.append(expl[state][1])
+                state = expl[state][0]
+
+            # print(path[::-1])
+
+            return path[::-1]
+        
+        else:
+            for s, a, c in problem.getSuccessors(state):
+                # path_cost = util.manhattanDistance(state, strt_state) + heuristic(state, problem)
+                # est_cost = cost + 1 + heuristic(s, problem)
+                est_cost = cost + problem.getCostOfActions([a]) + heuristic(s, problem)
+
+                if not ((est_cost > cost) and (s in expl)):
+                    front.update((s, state, a, est_cost), est_cost)
+                    expl[s] = [state, a, est_cost]
+
+
+
+
+
+    # util.raiseNotDefined()
 
 
 # Abbreviations
